@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pain Point Calculator</title>
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    .textBox {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: blue;
+      font-family: "Bookman Old Style", serif;
+      font-weight: bold;
+    }
+
+    .square {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      border: 1px solid black;
+      display: inline-block;
+      text-align: center;
+      line-height: 100px;
+      font-size: 24px;
+    }
+
+    #gains {
+      background-color: lightgreen;
+    }
+
+    #losses {
+      background-color: tomato;
+    }
+
+    #quitButton {
+      background-color: tomato;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    #cryingCat {
+      font-size: 48px;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .betButton {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .betButtonContainer {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #painPointSection {
+      text-align: center;
+    }
+
+    #painPointText {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    #moneyLost {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="textBox">
+      How Much Can You Bear to Lose?
+    </div>
+    <div class="textBox">
+      Money Remaining: $<span id="moneyRemaining">2000</span>
+    </div>
+    <div class="betButtonContainer">
+      <button class="betButton" onclick="calculatePainPoint(100)">Bet $100</button>
+      <button class="betButton" onclick="calculatePainPoint(300)">Bet $300</button>
+      <button class="betButton" onclick="calculatePainPoint(500)">Bet $500</button>
+    </div>
+    <div>
+      <div class="square" id="gains">+</div>
+      <div class="square" id="losses">-</div>
+    </div>
+
+    <div id="painPointSection" class="hidden">
+      <div id="painPointText">Pain Point</div>
+      <div id="moneyLost"></div>
+    </div>
+
+    <button id="quitButton">Quit Game</button>
+
+    <div id="cryingCat" class="hidden">😿</div>
+  </div>
+
+  <script>
+    var moneyRemaining = 2000;
+    var totalGains = 0;
+    var totalLosses = 0;
+
+    function calculatePainPoint(betAmount) {
+      var randomNum = Math.random();
+      var gainPercentage;
+      var lossPercentage;
+
+      if (randomNum < 0.05) {
+        gainPercentage = 2;
+        lossPercentage = 0;
+      } else if (randomNum < 0.15) {
+        gainPercentage = 0;
+        lossPercentage = 0;
+      } else if (randomNum < 0.20) {
+        gainPercentage = 1.5;
+        lossPercentage = 0;
+      } else if (randomNum < 0.60) {
+        gainPercentage = 0;
+        lossPercentage = 0.5;
+      } else if (randomNum < 0.90) {
+        gainPercentage = 0;
+        lossPercentage = 1;
+      } else {
+        gainPercentage = 0;
+        lossPercentage = 1.5;
+      }
+
+      var gain = betAmount * gainPercentage;
+      var loss = betAmount * lossPercentage;
+
+      moneyRemaining -= betAmount;
+      moneyRemaining += gain;
+      moneyRemaining -= loss;
+      moneyRemaining -= moneyRemaining * 0.5;
+
+      if (gain > 0) {
+        totalGains += gain;
+      } else {
+        totalLosses += Math.abs(loss);
+        showCryingCat();
+      }
+
+      updateDisplay();
+
+      if (moneyRemaining <= 0) {
+        endGame();
+      }
+    }
+
+    function updateDisplay() {
+      document.getElementById("moneyRemaining").textContent = moneyRemaining.toFixed(2);
+      document.getElementById("gains").textContent = "+" + totalGains.toFixed(2);
+      document.getElementById("losses").textContent = "-" + totalLosses.toFixed(2);
+    }
+
+    function endGame() {
+      document.getElementById("painPointSection").classList.remove("hidden");
+      document.getElementById("moneyLost").textContent = "Total Losses: $" + totalLosses.toFixed(2);
+      document.getElementById("quitButton").disabled = true;
+      document.getElementById("cryingCat").classList.remove("hidden");
+    }
+
+    function quitGame() {
+      var container = document.querySelector(".container");
+      container.innerHTML = `
+        <div id="painPointSection">
+          <div id="painPointText">Pain Point</div>
+          <div id="moneyLost">Total Losses: $${totalLosses.toFixed(2)}</div>
+        </div>
+      `;
+    }
+
+    function showCryingCat() {
+      var cryingCat = document.getElementById("cryingCat");
+      cryingCat.classList.remove("hidden");
+      setTimeout(function() {
+        cryingCat.classList.add("hidden");
+      }, 3000);
+    }
+
+    var quitButton = document.getElementById("quitButton");
+    quitButton.addEventListener("click", quitGame);
+  </script>
+</body>
+</html>
