@@ -177,16 +177,17 @@
     function endGame() {
       document.getElementById("painPointSection").classList.remove("hidden");
       document.getElementById("moneyLost").textContent = "Total Losses: $" + totalLosses.toFixed(2);
-      document.getElementById("quitButton").disabled = true;
       document.getElementById("cryingCat").classList.remove("hidden");
     }
 
     function quitGame() {
       var container = document.querySelector(".container");
       container.innerHTML = `
-        <div id="painPointSection">
-          <div id="painPointText">Pain Point</div>
-          <div id="moneyLost">Total Losses: $${totalLosses.toFixed(2)}</div>
+        <div class="container">
+          <div id="painPointSection">
+            <div id="painPointText">Pain Point</div>
+            <div id="moneyLost">Total Losses: $${totalLosses.toFixed(2)}</div>
+          </div>
         </div>
       `;
     }
